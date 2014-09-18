@@ -18,7 +18,7 @@
 # CUSTOMIZABLE VARIABLES BELOW #
 ################################
 
- The directory in which snapshots are stored
+# The directory in which snapshots are stored
 # NOTE: This will contain 1 complete copy of
 # the original data at *least*.
 snapdir="/opt/snapshots_labkey/files"
@@ -38,7 +38,7 @@ rsyncpasswordfile="/root/password"
 checksums="no"
 
 # directory for "makeSnapshotProcessIsRunning" file
-pirfiledir="/opt/snapshots_labkey/makeSnapshots"
+pirfiledir="/opt/snapshots_labkey"
 
 # Source directories to put into the snapshots
 # NOTE: Do *NOT* include the snapshot directory.
@@ -138,6 +138,9 @@ do
   ssminus1=`expr ${ss} - 1`
   if [ -d ${snapdir}/daily.${ssminus1} ]; then echo -n "Moving \"daily.${ssminus1}\" to \"daily.${ss}\"..."; start_time=`date +%s`; mv ${snapdir}/daily.${ssminus1} ${snapdir}/daily.${ss}; end_time=`date +%s`; echo " done (`duration`)."; fi
 done
+
+echo "SnapDir: ${snapdir}"
+
 echo
 if [ -d ${snapdir}/daily.0 ]; then echo -n "Synchronizing \"daily.0\" with \"daily.1\"..."; start_time=`date +%s`; cp -al ${snapdir}/daily.0 ${snapdir}/daily.1; end_time=`date +%s`; echo " done (`duration`)."; echo; fi
 
@@ -199,7 +202,11 @@ echo
 start_time=`date +%s`
 for dir in "${dirs[@]}"
 do
+  echo "Ensure destination directory exists: ${snapdir}/daily.0/${dir}/" 
+  mkdir -p ${snapdir}/daily.0/${dir}/	
+	
   echo "Rsyncing \"${dir}\"..."
+      
   if [ ${protocol} = "rsync" ]
   then
     if [ ${checksums} = "yes" ]
@@ -213,9 +220,9 @@ do
     then
       if [ ${checksums} = "yes" ]
       then
-        rsync -avSc --delete ${dir}/ ${snapdir}/daily.0/${dir}/
+        rsync -avScr --delete ${dir}/ ${snapdir}/daily.0/${dir}/
       else
-        rsync -avS --delete ${dir}/ ${snapdir}/daily.0/${dir}/
+        rsync -avSr --delete ${dir}/ ${snapdir}/daily.0/${dir}/
       fi
     else
       echo "No protocol specified, so dropping rsync protocol and using directory..."
@@ -223,7 +230,7 @@ do
       then
         rsync -avSc --delete ${dir}/ ${snapdir}/daily.0/${dir}/
       else
-        rsync -avS --delete ${dir}/ ${snapdir}/daily.0/${dir}/
+        rsync -avSr --delete ${dir}/ ${snapdir}/daily.0/${dir}/
       fi
     fi
   fi
