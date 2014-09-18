@@ -18,15 +18,16 @@
 # CUSTOMIZABLE VARIABLES BELOW #
 ################################
 
-# The directory in which snapshots are stored
+ The directory in which snapshots are stored
 # NOTE: This will contain 1 complete copy of
 # the original data at *least*.
-snapdir="/snapshots"
+snapdir="/opt/snapshots_labkey/files"
+
 rsyncsnapdir="snapshots"
 
 # rsync protocol OR directory -> directory
-protocol="rsync"
-#protocol="directory"
+#protocol="rsync"
+protocol="directory"
 
 # rsync login details
 rsynchostname="nas"
@@ -37,13 +38,13 @@ rsyncpasswordfile="/root/password"
 checksums="no"
 
 # directory for "makeSnapshotProcessIsRunning" file
-pirfiledir="/root/scripts/makeSnapshots"
+pirfiledir="/opt/snapshots_labkey/makeSnapshots"
 
 # Source directories to put into the snapshots
 # NOTE: Do *NOT* include the snapshot directory.
-dirs[0]='/root/'
-dirs[1]='/etc/'
-dirs[2]='/home/'
+dirs[0]='/opt/labkey/files/'
+#dirs[1]='/etc/'
+#dirs[2]='/home/'
 
 # NOTE: If you reduce the maximum number of snapshots
 # you may have to delete the higher numbered snapshots
@@ -65,7 +66,8 @@ maxyearly=10
 # 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat, 7=Sun
 # NOTE: All weekly, monthly & yearly snapshots
 # will be based on the day before.
-daytorun=2
+daytorun=7
+
 
 
 
